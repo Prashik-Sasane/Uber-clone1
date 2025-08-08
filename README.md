@@ -1,168 +1,162 @@
-# UberClone Project Documentation
-
-## Overview
-
-This project is a full-stack Uber clone, consisting of a **Node.js/Express/MongoDB backend** and a **React frontend**.  
-Below you'll find the workflow, folder structure, and key responsibilities for both backend and frontend.
+# Developer Documentation: `/user/register` and `/user/login` Routes
 
 ---
 
-## Backend (`/server`)
+## `/user/register` Route
 
-### Tech Stack
+### Overview
 
-- Node.js
-- Express.js
-- MongoDB (Mongoose)
-- JWT Authentication
-- Docker support
+The `/user/register` endpoint allows new users to register by providing their first name, email, and password. The backend validates input, hashes the password, saves the user, and returns a JWT token.
 
-### Folder Structure
+### Route Details
 
-```
-server/
-│   .dockerignore
-│   .env
-│   app.js
-│   Dockerfile
-│   Readme.md
-├── controller/
-│     usercontroller.js
-├── db/
-│     db.js
-├── middleware/
-│     auth.middleware.js
-├── models/
-│     blacklistToken.model.js
-│     user.js
-├── routes/
-│     user.routes.js
-├── services/
-│     user.service.js
+- **Method:** POST  
+- **Path:** `/user/register`  
+- **Controller:** `usercontroller.registerUser`  
+- **Middlewares:**  
+  - `express-validator` for input validation
+
+### Request Body
+
+```json
+{
+  "fullname": {
+    "firstname": "John"
+  },
+  "email": "john@example.com",
+  "password": "yourpassword"
+}
 ```
 
-### Workflow
+#### Validation Rules
 
-1. **Entry Point:**  
-   `app.js` initializes the Express app, connects to MongoDB, and sets up routes and middleware.
+- `fullname.firstname`: Required, string, minimum 3 characters.
+- `email`: Required, must be a valid email format.
+- `password`: Required, minimum 6 characters.
 
-2. **Database Connection:**  
-   `db/db.js` handles MongoDB connection using Mongoose.
+### Backend Flow
 
-3. **Routing:**  
-   - All user-related routes are defined in `routes/user.routes.js`.
-   - Routes include registration, login, profile, and logout.
+1. **Validation:** Uses `express-validator` to check the request body. If validation fails, responds with status `400` and error details.
+2. **Password Hashing:** The password is hashed using bcrypt before saving.
+3. **User Creation:** A new user document is created in MongoDB with the provided details.
+4. **Token Generation:** After successful registration, a JWT token is generated using the user's `_id`.
+5. **Response:** Returns a JSON object with the JWT token and user data.
 
-4. **Controllers:**  
-   - `controller/usercontroller.js` contains logic for user actions (register, login, profile, logout).
+### Example Success Response
 
-5. **Models:**  
-   - `models/user.js`: User schema, password hashing, JWT methods.
-   - `models/blacklistToken.model.js`: For JWT token blacklisting on logout.
-
-6. **Middleware:**  
-   - `middleware/auth.middleware.js`: Protects routes by verifying JWT tokens.
-
-7. **Services:**  
-   - `services/user.service.js`: Business logic for user operations.
-
-8. **Environment Variables:**  
-   - `.env` stores sensitive config (DB URI, JWT secret, etc.).
-
-9. **Docker:**  
-   - `Dockerfile` and `.dockerignore` for containerization.
-
----
-
-## Frontend (`/frontend`)
-
-### Tech Stack
-
-- React (with Vite)
-- Context API for state management
-- CSS Modules
-
-### Folder Structure
-
-```
-frontend/
-│   .gitignore
-│   eslint.config.js
-│   index.html
-│   package.json
-│   README.md
-│   vite.config.js
-├── public/
-│     vite.svg
-├── src/
-│   │   App.css
-│   │   App.jsx
-│   │   index.css
-│   │   main.jsx
-│   ├── assets/
-│   │     react.svg
-│   ├── components/
-│   │   └── Context/
-│   │         UserContext.jsx
-│   ├── page/
-│         Login.jsx
-│         SignUp.jsx
+```json
+{
+  "token": "jwt_token_here",
+  "user": {
+    "_id": "1234567890abcdef",
+    "fullname": {
+      "firstname": "John"
+    },
+    "email": "john@example.com"
+  }
+}
 ```
 
-### Workflow
+### Error Responses
 
-1. **Entry Point:**  
-   `src/main.jsx` renders the React app.
-
-2. **App Structure:**  
-   - `src/App.jsx` is the root component.
-   - Routing and global providers (like context) are set up here.
-
-3. **Pages:**  
-   - `src/page/Login.jsx`: Login form and logic.
-   - `src/page/SignUp.jsx`: Registration form and logic.
-
-4. **Context:**  
-   - `src/components/Context/UserContext.jsx`: Manages user authentication state and provides it to the app.
-
-5. **Assets & Styling:**  
-   - `src/assets/`: Static images and SVGs.
-   - `src/App.css`, `src/index.css`: Global and component styles.
-
-6. **API Communication:**  
-   - The frontend communicates with the backend via HTTP requests (e.g., login, register, fetch profile).
-   - JWT tokens are stored in context or local storage and sent with requests to protected endpoints.
+- **400 Bad Request:**  
+  - Validation errors (missing fields, invalid email, short password)
+  - Example:
+    ```json
+    {
+      "errors": [
+        {
+          "msg": "First name must be at least 3 characters long",
+          "param": "fullname.firstname",
+          "location": "body"
+        }
+      ]
+    }
+    ```
 
 ---
 
-## How It Works
+## `/user/login` Route
 
-- **User Registration:**  
-  User fills the sign-up form (frontend), which sends a POST request to `/user/register` (backend). Backend validates, hashes password, creates user, and returns a JWT token.
+### Overview
 
-- **User Login:**  
-  User fills the login form, which sends a POST request to `/user/login`. Backend verifies credentials and returns a JWT token.
+The `/user/login` endpoint allows existing users to authenticate using their email and password. The backend validates input, checks credentials, and returns a JWT token with user data upon successful login.
 
-- **Profile Access:**  
-  Authenticated requests to `/user/profile` return user data. The frontend uses the token to access protected routes.
+### Route Details
 
-- **Logout:**  
-  User triggers logout, which calls `/user/logout` to blacklist the token and clear authentication state on the frontend.
+- **Method:** POST  
+- **Path:** `/user/login`  
+- **Controller:** `usercontroller.loginUser`  
+- **Middlewares:**  
+  - `express-validator` for input validation
+
+### Request Body
+
+```json
+{
+  "email": "john@example.com",
+  "password": "yourpassword"
+}
+```
+
+#### Validation Rules
+
+- `email`: Required, must be a valid email format.
+- `password`: Required, minimum 6 characters.
+
+### Backend Flow
+
+1. **Validation:** Uses `express-validator` to check the request body. If validation fails, responds with status `400` and error details.
+2. **User Lookup:** Finds the user by email in MongoDB. If not found, responds with status `401`.
+3. **Password Verification:** Compares the provided password with the hashed password in the database using bcrypt.
+4. **Token Generation:** If credentials are valid, generates a JWT token using the user's `_id`.
+5. **Response:** Returns a JSON object with the JWT token and user data.
+
+### Example Success Response
+
+```json
+{
+  "token": "jwt_token_here",
+  "user": {
+    "_id": "1234567890abcdef",
+    "fullname": {
+      "firstname": "John"
+    },
+    "email": "john@example.com"
+  }
+}
+```
+
+### Error Responses
+
+- **400 Bad Request:**  
+  - Validation errors (missing fields, invalid email, short password)
+  - Example:
+    ```json
+    {
+      "errors": [
+        {
+          "msg": "Invalid Email",
+          "param": "email",
+          "location": "body"
+        }
+      ]
+    }
+    ```
+- **401 Unauthorized:**  
+  - Invalid email or password
+  - Example:
+    ```json
+    {
+      "message": "Invalid email or password"
+    }
+    ```
 
 ---
 
-## Development
+## Related Files
 
-- **Backend:**  
-  - Run with `node server/app.js` or use Docker.
-  - Configure `.env` for environment variables.
-
-- **Frontend:**  
-  - Run with `npm run dev` inside `/frontend`.
-  - Configure API endpoints as needed.
-
----
-
-## Related Docs
-
-- See route-specific documentation for `/user/register`, `/user/login`, `/user/profile
+- `server/routes/user.routes.js` — Route definition and validation
+- `server/controller/usercontroller.js` — Controller logic
+- `server/models/user.js` — User schema and methods
+- `server/services/user.service.js` — User
