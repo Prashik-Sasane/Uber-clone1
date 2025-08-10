@@ -1,27 +1,16 @@
 const userModel = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 module.exports.CreateUser =  async({ 
-     firstname , email , password
+      email , password
 }) => {
-    if(!firstname || !email || !password) {
-        throw new Error('All field are required')
-    }
-
-    const user = userModel.create({
-        fullname: {
-            firstname,
-            lastname
-        },
+    // if(!firstname || !email || !password) {
+    //     throw new Error('All field are required')
+    // }
+    const user = await userModel.create({
         email,
         password
     });
 
-    (await user).save();
-
-    const token = generateAuthToken();
-
-    res.status(201).json({
-       success: true,
-       message: 'User registered successfully'
-    })
+   return user;
 }

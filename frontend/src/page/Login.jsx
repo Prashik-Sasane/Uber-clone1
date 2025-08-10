@@ -20,7 +20,7 @@ const Login = () => {
     const hangleLogin = async(e) => {
         e.preventDefault();
         try{
-            const res = await axios.post("http://localhost:3000/api/auth/login", {email , password});
+            const res = await axios.post("http://localhost:3000/login", {email , password});
 
             toast.success('Login Successfully', {
                 position: "top-center",
@@ -43,8 +43,7 @@ const Login = () => {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-            theme: "light",
-        
+            theme: "light", 
         });
         }
     }
@@ -52,7 +51,7 @@ const Login = () => {
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
        <form
           onSubmit={hangleLogin}
-          className="login-form bg-white p-8 rounded shadow-md w-full max-w-md"
+          className="login-form bg-white p-8 shadow-md w-full max-w-md rounded-2xl"
           style={{ minHeight: "500px" }}
        >
           <h2 className="text-2xl font-extrabold mb-6 text-center">Login Page</h2>
@@ -65,7 +64,7 @@ const Login = () => {
                   onChange={e => setemail(e.target.value)}
                   placeholder='Ex.John'
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-400"
               />
           </div>
           <div className="mb-6">
@@ -77,17 +76,18 @@ const Login = () => {
                   onChange={e => setpassword(e.target.value)}
                   placeholder='Ex.john@example.com'
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                  className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-xl"
               />
           </div>
           <button
               type="submit"
-              className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors font-bold text-2xl"
+              className="w-full bg-blue-600 text-white py-2 hover:bg-blue-700 transition-colors font-bold text-2xl rounded-2xl"
           >
-              Login
+              Sign In
           </button>
           <p className="mt-4 text-center text-gray-600">
-              Don't have an account? <Link to="/register" className="text-blue-600 hover:underline">Register</Link>
+              Don't have an account? 
+              {/* <Link to="/Signup" className="text-blue-600 hover:underline mr-2">Sign Up</Link> */}
           </p>
        </form>
     </div>

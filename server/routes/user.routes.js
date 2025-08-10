@@ -4,17 +4,21 @@ const userModel = require('../models/user')
 const bcrypt = require('bcrypt')
 const router = express.Router();
 const jwt = require('jsonwebtoken');
-const controllerUser = require('../controller/usercontroller');
+const loginUser = require('../controller/usercontroller');
 
-router.get('/register' , (req , res) => {
-    res.render('register');
-})
+// router.get('/register' , (req , res) => {
+//     res.render('register');
+// })
 
-router.post('/register' ,[
-    body('email').isEmail().withMessage('Invalid Email'),
-    body('fullname.firstname').isLength({ min: 3}).withMessage('First name must be at least 3 characters long'),
-    body('password').isLength({ min: 6}).withMessage('Password must be at least 3 characters long'),
-    ],
-    controllerUser.registerUser
-)
+// router.post('/register' ,[
+//     body('email').isEmail().withMessage('Invalid Email'),
+//     body('fullname.firstname').isLength({ min: 3}).withMessage('First name must be at least 3 characters long'),
+//     body('password').isLength({ min: 6}).withMessage('Password must be at least 3 characters long'),
+//     ],
+//     controllerUser.registerUser
+    
+// )
+
+router.get('/login', loginUser);
+
 module.exports = router;
