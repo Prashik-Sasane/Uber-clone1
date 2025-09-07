@@ -9,20 +9,15 @@ module.exports.registerUser = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const { email, password, fullname } = req.body;
-    const existingUser = await userService.FindUserByEmail(email);
-    if (existingUser) {
-        return res.status(400).json({ message: "User already exists" });
-    }
+    const {fullname, email , password} = req.body;
     const hashedPassword = await userModel.hashPassword(password);
-    const newUser = new userModel({
+    const user = new userModel({
         email,
         password: hashedPassword,
         fullname
     });
-    await newUser.save();
-    const token = newUser.generateAuthToken();
-    res.status(201).json({ token, user: newUser });
+    const token = user.generateAuthToken();
+    res.status(201).json({ token, user });
 }
 
 module.exports.loginUser = async (req, res) => {
@@ -30,7 +25,7 @@ module.exports.loginUser = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-
+    
     const { email, password } = req.body;
 
     const user = await userService.FindUserByEmail(email);
