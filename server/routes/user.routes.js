@@ -6,9 +6,9 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const usercontroller = require('../controller/usercontroller')
 
-router.get('/register' , (req , res) => {
-    res.render('register');
-})
+// router.get('/register' , (req , res) => {
+//     res.render('register');
+// })
 
 router.post('/register' ,[
     body('email').isEmail().withMessage('Invalid Email'),
@@ -19,6 +19,12 @@ router.post('/register' ,[
     
 )
 
-router.get('/login', usercontroller.loginUser);
+router.post('/login', [
+    body('email').isEmail().withMessage('Invalid Email'),
+    body('password').isLength({ min: 6}).withMessage('Password must be at least 3 characters long')
+]
+, usercontroller.loginUser
+
+);
 
 module.exports = router;

@@ -21,7 +21,6 @@ const Login = () => {
         e.preventDefault();
         try{
             const res = await axios.post("http://localhost:3000/login", {email , password});
-
             toast.success('Login Successfully', {
                 position: "top-center",
                 autoClose: 5000,
