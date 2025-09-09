@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt')
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const usercontroller = require('../controller/usercontroller')
-
+const authMiddleware = require('../middleware/auth.middleware')
 // router.get('/register' , (req , res) => {
 //     res.render('register');
 // })
@@ -27,4 +27,5 @@ router.post('/login', [
 
 );
 
+router.get('/profile', authMiddleware.authUser, usercontroller.getProfile)
 module.exports = router;

@@ -41,3 +41,17 @@ module.exports.loginUser = async (req, res, next) => {
     const token = user.generateAuthToken();
     res.status(201).json({ token, user });
 }
+
+module.exports.getProfile = async (req, res, next) => {
+    // Assuming user is authenticated and user ID is available in req.userId    
+    const userId = req.userId; // You need to set this value during authentication
+    try {
+        const user = await userModel.findById(userId).select('-password');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+        res.status(200).json({ user });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error' });
+    }
+}
