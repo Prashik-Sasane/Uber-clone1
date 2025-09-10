@@ -3,6 +3,7 @@ const userModel = require('../models/user');
 const userService = require("../services/user.service")
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
+const blacklistTokenModel = require('../models/blacklistToken.model');
 
 module.exports.registerUser = async (req, res, next) => {
     const errors = validationResult(req);
@@ -55,3 +56,15 @@ module.exports.getProfile = async (req, res, next) => {
         res.status(500).json({ message: 'Server error' });
     }
 }
+
+module.exports.logoutUser = async (req, res, next) => {
+    res.clearCookie('token');
+    const token = req.cookies.token || req.header('Authorization')?.replace('Bearer ', '');
+    await blacklistTokenModel.create({ token });
+    res.status(200).json({ message: 'Logged out successfully' });
+
+    // Optionally, you can also blacklist the token here if you're using a token blacklist
+    // const token = req.cookies.token || req.header('Authorization')?.replace('Bearer ', '');
+        // await userService.blacklistToken(token);
+}
+
