@@ -22,3 +22,21 @@ module.exports.authUser = async(req , res, next) =>{
         res.status(401).json({ message: 'Invalid token' });
     }
 }
+
+module.exports.authCaptain = async(req , res , next) => {
+    const token = req.cookies.token || req.header('Authorization')?.replace('Bearer ', '');
+    if(!token) {
+        return res.status(401).json({ message: 'Access denied. No token provided.' });
+    }
+    const isBlacklisted = await user
+    if (isBlacklisted) {
+        return res.status(401).json({ message: 'Token has been blacklisted. Please log in again.' });
+    }
+    try {
+        const decoded = jwt.verify(token , process.env.JWT_SECRET);
+        req.captainId = decoded._id;
+        next();
+    } catch (error) {
+        res.status(401).json({ message: 'Invalid token' }); 
+    }
+}

@@ -4,8 +4,7 @@ const dotenv = require('dotenv');
 const connectToDB = require('./db/db')
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const userRoutes = require('./routes/user.routes')
-
+const CaptainRouter = require('./routes/captain.routes')
 connectToDB();
 dotenv.config();
 
@@ -17,7 +16,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: true}))
 app.use(cookieParser())
 app.use('/users' , userRouter)
-
+app.use('/captain', CaptainRouter)
 const PORT = 3000 || process.env.PORT; 
 
 app.get('/', (res, req) => {
