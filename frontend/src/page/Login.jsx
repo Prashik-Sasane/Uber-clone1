@@ -47,10 +47,10 @@ const Login = () => {
         }
     }
     return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 ">
        <form
           onSubmit={hangleLogin}
-          className="login-form bg-white p-8 shadow-md w-full max-w-md rounded-2xl"
+          className="login-form bg-white p-10 mb-20 w-full rounded-4xl shadow-2xl max-w-sm"
           style={{ minHeight: "500px" }}
        >
           <h2 className="text-2xl font-extrabold mb-6 text-center">Login Page</h2>
@@ -78,12 +78,14 @@ const Login = () => {
                   className="w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-400 rounded-xl"
               />
           </div>
+          <Link to="/register">
           <button
               type="submit"
               className="w-full bg-blue-600 text-white py-2 hover:bg-blue-700 transition-colors font-bold text-2xl rounded-2xl"
           >
               Sign In
           </button>
+          </Link>
           <p className="mt-4 text-center text-gray-600">
               Don't have an account? 
               {/* <Link to="/Signup" className="text-blue-600 hover:underline mr-2">Sign Up</Link> */}

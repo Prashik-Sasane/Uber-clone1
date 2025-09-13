@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { ToastContainer } from 'react-toastify'
 import { BrowserRouter , Route , Routes } from 'react-router-dom'
 import Login from './page/Login'
-import SignUp from './page/SignUp'
+import Register from './page/Register'
 import './App.css'
 
 function App() {
@@ -12,9 +12,9 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<SignUp />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
-        <ToastContainer />
+        <ToastContainer/>
       </BrowserRouter>
     </>
   )
